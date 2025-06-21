@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS user (
     password VARCHAR(255) NOT NULL
 );
 
--- Table: room_booking
+-- Table: room_bookings
 CREATE TABLE IF NOT EXISTS room_booking (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100),

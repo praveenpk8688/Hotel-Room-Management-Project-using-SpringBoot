@@ -42,9 +42,9 @@
         padding: 30px;
         background-color: rgb(0, 0, 0);
         background-color: rgba(75, 75, 75, 0.2);
-        /* background-color: rgba(255, 255, 255, 0.734); */
+      
         border-radius: 50px;
-        /* border:1px solid black; */
+       
         box-shadow: 0 5px 20px rgba(0, 0, 0, 1);
         position: relative;
       }
@@ -442,24 +442,7 @@
           loginForm.classList.remove("active");
         });
 
-        // Form validation
-       // loginForm.addEventListener("submit", function (e) {
-          
-       //  if (validateLoginForm()) {
-        //    alert("Login successful!");
-            // Redirect or perform other actions after successful login
-        //    console.log("User logged in");
-        //  }
-      //  });
 
-      //  signupForm.addEventListener("submit", function (e) {
-        
-       //   if (validateSignupForm()) {
-       //     alert("Signup successful!");
-            // Redirect or perform other actions after successful signup
-        //    console.log("User signed up");
-        //  }
-      //  });
       
 		      loginForm.addEventListener("submit", function (e) {
 		  if (!validateLoginForm()) e.preventDefault();

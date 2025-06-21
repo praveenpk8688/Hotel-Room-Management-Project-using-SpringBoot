@@ -438,7 +438,7 @@
                           Enjoy a 20% discount on weekend stays. Perfect for a
                           quick escape from the city.
                         </p>
-                        <button class="btn btn-primary">Learn More</button>
+                        <button class="btn btn-primary" th:href="@{/register}">Learn More</button>
                       </div>
                     </div>
                   </div>
@@ -461,7 +461,7 @@
                           Book a family room and get complimentary breakfast and
                           access to our kids' club.
                         </p>
-                        <button class="btn btn-primary">Learn More</button>
+                        <button class="btn btn-primary" th:href="@{/register}">Learn More</button>
                       </div>
                     </div>
                   </div>
@@ -880,11 +880,11 @@
           <p class="card-text text-secondary mb-3">${room.description}</p>
           <div class="d-flex justify-content-between align-items-center">
             <span class="fs-5 fw-bold text-danger">$${room.price}<span class="fs-6 text-secondary">/night</span></span>
-            <button th:href="@{/register}" class="btn btn-danger btn-sm">Book Now</button>
+            <a href="/register" class="btn btn-danger btn-sm">Book Now</a>
           </div>
         </div>
         <div class="card-footer bg-light d-flex justify-content-between">
-          <button  th:href="@{/register}" class="btn btn-link text-danger text-decoration-none p-0">View Details</button>
+          <a href="/register" class="btn btn-link text-danger text-decoration-none p-0">View Details</a>
           <button class="btn btn-link text-danger text-decoration-none p-0">Add to Favorites</button>
         </div>
       </div>
@@ -911,12 +911,12 @@
                 <p class="card-text text-secondary mb-3">${room.description}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="fs-5 fw-bold text-primary">$${room.price}<span class="fs-6 text-secondary">/night</span></span>
-                  <button th:href="@{/register}" class="btn btn-primary btn-sm">Book Now</button>
+                  <a href="/register" class="btn btn-primary btn-sm">Book Now</a>
                    
                 </div>
               </div>
               <div class="card-footer bg-light d-flex justify-content-between">
-                <button th:href="@{/register}" class="btn btn-link text-primary text-decoration-none p-0">View Details</button>
+                <a href="/register" class="btn btn-link text-primary text-decoration-none p-0">View Details</a>
                 <button class="btn btn-link text-primary text-decoration-none p-0">Add to Favorites</button>
               </div>
             </div>
