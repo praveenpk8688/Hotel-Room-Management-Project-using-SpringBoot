@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Management System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script>
+        function confirmDelete(bookingId) {
+            if (confirm("Are you sure you want to delete this room booking?")) {
+                window.location.href = "/booking/delete/" + bookingId;
+            }
+        }
+    </script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+    }
+    
+    .nav-tabs .nav-link {
+      color: #495057;
+      font-weight: 500;
+    }
+    
+    .nav-tabs .nav-link.active {
+      color: #0d6efd;
+      font-weight: 600;
+    }
+    
+    .tab-content {
+      padding: 20px;
+      background-color: #fff;
+      border-left: 1px solid #dee2e6;
+      border-right: 1px solid #dee2e6;
+      border-bottom: 1px solid #dee2e6;
+      border-radius: 0 0 5px 5px;
+    }
+    
+    .booking-form {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+    
+    .search-container {
+      margin-bottom: 20px;
+    }
+    
+    .table th {
+      cursor: pointer;
+    }
+    
+    .table th:hover {
+      background-color: #e9ecef;
+    }
+    
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    .badge {
+      font-size: 0.8em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Hotel Management System</h1>
+    
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <!-- <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button" role="tab" aria-controls="booking" aria-selected="true">Room Booking</button>
+      </li> -->
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="records-tab" data-bs-toggle="tab" data-bs-target="#records" type="button" role="tab" aria-controls="booking" aria-selected="false">Customer Records</button>
+      </li>
+    </ul>
+    
+    <!-- <div class="tab-content" id="myTabContent">
+      Booking Form Tab
+      <div class="tab-pane fade show active" id="booking" role="tabpanel" aria-labelledby="booking-tab">
+        <div class="booking-form">
+          <h2 class="text-center mb-4">Room Booking Form</h2>
+          <form id="bookingForm">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" name="phone" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="roomType" class="form-label">Room Type</label>
+                <select class="form-select" id="roomType" name="roomType" required>
+                  <option value="">Select Room Type</option>
+                  <option value="single">Single Bed ($100/night)</option>
+                  <option value="double">Double Bed ($150/night)</option>
+                  <option value="suite">Suite ($250/night)</option>
+                  <option value="deluxe">Deluxe ($300/night)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Additional Services</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="services" value="breakfast" id="breakfast">
+                <label class="form-check-label" for="breakfast">Breakfast ($10/day)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="services" value="wifi" id="wifi">
+                <label class="form-check-label" for="wifi">Wi-Fi ($5/day)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="services" value="parking" id="parking">
+                <label class="form-check-label" for="parking">Parking ($15/day)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="services" value="spa" id="spa">
+                <label class="form-check-label" for="spa">Spa Access ($30/day)</label>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="checkinDate" class="form-label">Check-in Date</label>
+                <input type="date" class="form-control" id="checkinDate" name="checkinDate" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="checkoutDate" class="form-label">Check-out Date</label>
+                <input type="date" class="form-control" id="checkoutDate" name="checkoutDate" required>
+              </div>
+            </div>
+            
+            <div class="card mb-4">
+              <div class="card-header bg-light">
+                <h5 class="mb-0">Price Summary</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <p>Room Rate: <span id="roomRate" class="fw-bold">$0</span>/night</p>
+                    <p>Additional Services: <span id="servicesCost" class="fw-bold">$0</span>/day</p>
+                    <p>Number of Nights: <span id="numNights" class="fw-bold">0</span></p>
+                  </div>
+                  <div class="col-md-6">
+                    <p>Subtotal: <span id="subtotal" class="fw-bold">$0</span></p>
+                    <p>Tax (12%): <span id="tax" class="fw-bold">$0</span></p>
+                    <p class="fs-5">Total Price: <span id="totalPrice" class="fw-bold text-primary">$0</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">Book Now</button>
+            </div>
+          </form>
+        </div>
+      </div> -->
+      
+      <!-- Customer Records Tab -->
+      <div class="tab-pane  fade show active" id="records" role="tabpanel" aria-labelledby="records-tab">
+        <h2 class="text-center mb-4">Customer Registration Details</h2>
+        
+        <div class="search-container">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <input type="text" id="searchInput" class="form-control" placeholder="Search for customers...">
+            </div>
+            <div class="col-md-3 mb-3">
+              <select id="filterStatus" class="form-select">
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="checked-out">Checked Out</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <select id="filterRoom" class="form-select">
+                <option value="all">All Room Types</option>
+                <option value="single">Single</option>
+                <option value="double">Double</option>
+                <option value="suite">Suite</option>
+                <option value="deluxe">Deluxe</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="table-container">
+          <table class="table table-striped table-hover" id="customerTable">
+            <thead class="table-light">
+              <tr>
+                <th onclick="sortTable(0)">ID ↕</th>
+                <th onclick="sortTable(1)">Name ↕</th>
+                <th onclick="sortTable(2)">Email ↕</th>
+                 <th onclick="sortTable(3)">Phone Number ↕</th>
+                <th onclick="sortTable(4)">Room Type ↕</th>
+                <th onclick="sortTable(5)">Check-in ↕</th>
+                <th onclick="sortTable(6)">Check-out ↕</th>
+                <th onclick="sortTable(7)">Total ↕</th>
+                <th onclick="sortTable(8)">pricepernigntTotal ↕</th>
+              <!--    <th onclick="sortTable(8)">Status ↕</th>//-->
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customerTableBody">
+              <!-- Sample data - would be populated from database in a real application -->
+              <tr th:each="booking : ${bookings}">
+                <td th:text="${booking.id}"></td>
+                <td th:text="${booking.guestName}"></td>
+                <td th:text="${booking.guestEmail}"></td>
+                <td th:text="${booking.guestPhone}"></td>
+                <td th:text="${booking.roomType}"></td>
+                <td th:text="${booking.checkinDate}"></td>
+                <td th:text="${booking.checkoutDate}"></td>
+                 <td th:text="${booking.totalPrice != null ? booking.totalPrice : 'No totalPrice'}"></td>
+                 <td th:text="${booking.pricePerNight}"></td>
+                
+                 <td>
+                    <a class="btn btn-sm btn-outline-primary" th:href="@{'/booking/edit/' + ${booking.id}}">Edit</a>
+                    |
+                    <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" th:onclick="'confirmDelete(' + ${booking.id} + ')'">Delete</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <br />
+		    <a class="btn btn-sm btn-outline-primary" href="/register">Book Another Room</a>
+		    <br />
+		    <a class="btn btn-sm btn-outline-info" href="/">Home</a>
+		     <br />
+		    <a class="btn btn-sm btn-outline-danger" href="/logout">Logout</a>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div>
+            <span class="text-muted">Showing 7 of 7 entries</span>
+          </div>
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  
+  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Prices for room types
+    const prices = {
+      single: 100,
+      double: 150,
+      suite: 250,
+      deluxe: 300
+    };
+
+    // Additional services prices
+    const servicePrices = {
+      breakfast: 10,
+      wifi: 5,
+      parking: 15,
+      spa: 30
+    };
+
+    // Get form elements
+    const roomType = document.getElementById('roomType');
+    const checkinDate = document.getElementById('checkinDate');
+    const checkoutDate = document.getElementById('checkoutDate');
+    const roomRate = document.getElementById('roomRate');
+    const servicesCost = document.getElementById('servicesCost');
+    const numNights = document.getElementById('numNights');
+    const subtotal = document.getElementById('subtotal');
+    const tax = document.getElementById('tax');
+    const totalPrice = document.getElementById('totalPrice');
+    const services = document.querySelectorAll('input[name="services"]');
+    const bookingForm = document.getElementById('bookingForm');
+
+    // Update price when form inputs change
+    roomType.addEventListener('change', updatePrice);
+    checkinDate.addEventListener('change', updatePrice);
+    checkoutDate.addEventListener('change', updatePrice);
+    services.forEach(service => service.addEventListener('change', updatePrice));
+
+    // Calculate and update price
+    function updatePrice() {
+      // Get room price
+      const selectedRoomType = roomType.value;
+      const roomPrice = prices[selectedRoomType] || 0;
+      roomRate.textContent = `$${roomPrice}`;
+
+      // Calculate additional services cost
+      let additionalServicesCost = 0;
+      services.forEach(service => {
+        if (service.checked) {
+          additionalServicesCost += servicePrices[service.value];
+        }
+      });
+      servicesCost.textContent = `$${additionalServicesCost}`;
+
+      // Calculate number of nights
+      let nights = 0;
+      if (checkinDate.value && checkoutDate.value) {
+        const checkin = new Date(checkinDate.value);
+        const checkout = new Date(checkoutDate.value);
+        const timeDiff = checkout - checkin;
+        nights = Math.max(Math.ceil(timeDiff / (1000 * 60 * 60 * 24)), 0);
+      }
+      numNights.textContent = nights;
+
+      // Calculate subtotal
+      const dailyTotal = roomPrice + additionalServicesCost;
+      const subtotalAmount = dailyTotal * nights;
+      subtotal.textContent = `$${subtotalAmount}`;
+
+      // Calculate tax (12%)
+      const taxAmount = subtotalAmount * 0.12;
+      tax.textContent = `$${taxAmount.toFixed(2)}`;
+
+      // Calculate total price
+      const total = subtotalAmount + taxAmount;
+      totalPrice.textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Handle form submission
+    bookingForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // In a real application, you would send this data to the server
+      // For this demo, we'll just show an alert
+      alert('Booking submitted successfully!');
+      
+      // Reset form
+      bookingForm.reset();
+      updatePrice();
+    });
+
+    // Set minimum dates for check-in and check-out
+    const today = new Date().toISOString().split('T')[0];
+    checkinDate.setAttribute('min', today);
+    checkoutDate.setAttribute('min', today);
+
+    // Update check-out min date when check-in changes
+    checkinDate.addEventListener('change', function() {
+      checkoutDate.setAttribute('min', this.value);
+      if (checkoutDate.value && new Date(checkoutDate.value) < new Date(this.value)) {
+        checkoutDate.value = this.value;
+      }
+      updatePrice();
+    });
+
+    // Table sorting functionality
+    function sortTable(n) {
+      let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("customerTable");
+      switching = true;
+      // Set the sorting direction to ascending
+      dir = "asc";
+      
+      while (switching) {
+        switching = false;
+        rows = table.rows;
+        
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          
+          // Check if the two rows should switch
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          switchcount++;
+        } else {
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', filterTable);
+    document.getElementById('filterStatus').addEventListener('change', filterTable);
+    document.getElementById('filterRoom').addEventListener('change', filterTable);
+
+    function filterTable() {
+      const searchInput = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('filterStatus').value;
+      const roomFilter = document.getElementById('filterRoom').value;
+      const rows = document.getElementById('customerTableBody').getElementsByTagName('tr');
+      
+      for (let i = 0; i < rows.length; i++) {
+        const name = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+        const email = rows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
+        const roomType = rows[i].getElementsByTagName('td')[3].textContent.toLowerCase();
+        const statusElement = rows[i].getElementsByTagName('td')[7].getElementsByTagName('span')[0];
+        const status = statusElement.textContent.toLowerCase();
+        
+        const matchesSearch = name.includes(searchInput) || email.includes(searchInput);
+        const matchesStatus = statusFilter === 'all' || 
+                             (statusFilter === 'active' && status === 'active') ||
+                             (statusFilter === 'checked-out' && status === 'checked out') ||
+                             (statusFilter === 'cancelled' && status === 'cancelled');
+        const matchesRoom = roomFilter === 'all' || roomType.toLowerCase() === roomFilter;
+        
+        if (matchesSearch && matchesStatus && matchesRoom) {
+          rows[i].style.display = '';
+        } else {
+          rows[i].style.display = 'none';
+        }
+      }
+    }
+
+    // Initialize price calculation
+    updatePrice();
+  </script>
+</body>
+</html>

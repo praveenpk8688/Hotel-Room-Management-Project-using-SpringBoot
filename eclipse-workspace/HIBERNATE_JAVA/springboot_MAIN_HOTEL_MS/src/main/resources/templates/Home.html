@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luxury Hotel - Book Your Stay</title>
+    <meta
+      name="description"
+      content="Find your home away from home. Book your luxury hotel stay with us for the best rates and amenities."
+    />
+    <link
+      rel="icon"
+      href="https://img.icons8.com/color/48/000000/hotel-building.png"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+      
+
+      .room-card {
+        transition: transform 0.3s ease;
+      }
+      .room-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      .spinner {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .logo {
+        width: 30%;
+        mix-blend-mode: darken;
+      }
+      .logo:hover {
+        transition: ease 1s;
+        transform: scale(1.2);
+      }
+
+      .nav {
+        font-size: large;
+        font-weight: 700;
+      }
+      nav a:hover {
+        transition: ease-in-out 0.3s;
+        transform: scale(1.2);
+      }
+      nav.nav {
+        display: flex;
+        justify-content: center;
+        gap: 2.5rem;
+        font: bold 1.1rem sans-serif;
+        text-transform: uppercase;
+        color: grey;
+      }
+
+      nav.nav a {
+        /* position: relative; */
+        overflow: hidden;
+        text-decoration: none;
+        color: grey;
+        padding: 0.25em 0.5em;
+        transition: color 0.3s ease;
+      }
+
+      nav.nav a:hover {
+        color: #000000 !important;
+      }
+
+      /* Underline animation effect */
+      nav.nav a::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px; /* underline thickness */
+        background: #ce4f20; /* underline color */
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+
+      nav.nav a:hover::before {
+        transform: scaleX(1);
+      }
+
+      .login-link{
+        position: absolute;
+        /* top: -66px; */
+        /* left: 60px; */
+      }
+
+      #mobileMenu a:hover {
+        font-weight: bold;
+        color: #ce4f20;
+      }
+
+      /* Hero Image Animation */
+      .animated-card {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 10px 40px 2px rgba(0, 0, 0, 0.4);
+        background: transparent;
+        transform-origin: center center 0px;
+        transition: all 0.5s ease-out;
+        animation: cardFloat 3s infinite ease-in-out;
+        /* transform: perspective(1000px) rotateX(-80deg) rotateY(1deg) rotateZ(0deg); */
+      }
+
+      .animated-card:hover {
+        animation: none;
+        scale: 1.05;
+        transform: perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+      }
+
+      @keyframes cardFloat {
+        0% {
+          box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+          transform: translatey(0px);
+        }
+        50% {
+          box-shadow: 0 25px 15px 0px rgba(0, 0, 0, 0.2);
+          transform: translatey(30px);
+        }
+        100% {
+          box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+          transform: translatey(0px);
+        }
+      }
+
+      .sp_offer_img:hover {
+        transition: ease-in-out 1s;
+        transform: scale(1.1);
+      }
+
+      .dropdown {
+      	top: 5px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f900 !important;
+        min-width: 160px;
+        /* box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); */
+        z-index: 1;
+        left: 95%;
+        top: 100%;
+        transform: translateX(-50%);
+      }
+
+      .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+
+      /* .dropdown-content a:hover { */
+      /* background-color: #ddd; */
+      /* } */
+
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      .auth-info {
+        display: flex;
+        align-items: center;
+      }
+
+      .auth-info a {
+        margin-left: 0.5rem;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div id="app">
+      <header class="border-bottom border-light">
+        <div class="container py-4">
+          <div class="row align-items-center">
+            <div class="col-6 col-md-3">
+              <div class="d-flex align-items-center">
+                <!-- <img
+                  src="./images/MYHOTEL LOGO.jpg"
+                  alt="Hotel Logo"
+                  class="me-2 logo"
+                /> -->
+                <span class="fs-1 fw-bold">Luxury Hotel</span>
+              </div>
+            </div>
+
+            <div class="col-md-8 d-none d-md-block">
+              <nav class="d-flex mx-auto justify-content-end nav">
+                <a href="#" class="text-primary mx-auto text-decoration-none"
+                  >Home</a
+                >
+                <div class="dropdown">
+                  <a
+                    href="#featuredRoomsSection"
+                    class="text-secondary mx-auto text-decoration-none"
+                    >Rooms</a
+                  >
+                  <div class="dropdown-content">
+                    <a th:href="@{/register}">Book a Room</a>
+                    <a href="/bookings">My Bookings</a>
+                  </div>
+                </div>
+                <!-- <a href="#featuredRoomsSection" class="text-secondary mx-auto text-decoration-none">Rooms</a> -->
+                <a
+                  href="#vipRoomsSection"
+                  class="text-secondary mx-auto text-decoration-none"
+                  >VIP Rooms</a
+                >
+                <a
+                  href="#reviewsSection"
+                  class="text-secondary mx-auto text-decoration-none"
+                  >Reviews</a
+                >
+                <th:block sec:authorize="isAuthenticated()">
+                  <div class="auth-info">
+                    <span class="text-secondary mx-auto"
+                      >Welcome 
+                      <span
+                        class="text-primary fw-bold"
+                        th:text="${fullName}"
+                      ></span
+                    ></span>
+                    <a
+                      th:href="@{/logout}"
+                      class="text-secondary mx-4 text-decoration-none"
+                      >Logout</a
+                    >
+                  </div>
+                </th:block>
+                <th:block sec:authorize="isAnonymous()">
+                  <a
+                    th:href="@{/login}"
+                    class="text-secondary login-link mx-auto text-decoration-none"
+                    >Login</a
+                  >
+                </th:block>
+              </nav>
+            </div>
+            <div class="col-6 col-md-3 text-end">
+              <button class="btn d-md-none" id="mobileMenuToggle">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  class="bi bi-list"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="mobileMenu" class="d-none bg-white py-2 px-4">
+          <a
+            href="#"
+            class="d-block py-2 text-primary fw-medium text-decoration-none"
+            >Home</a
+          >
+          <div class="dropdown-mobile">
+            <a
+              href="#featuredRoomsSection"
+              class="d-block py-2 text-secondary text-decoration-none"
+              >Rooms</a
+            >
+            <div class="dropdown-content-mobile">
+              <a
+                th:href="@{/register}"
+                class="d-block py-2 text-secondary text-decoration-none"
+                >Book a Room</a
+              >
+              <a
+                th:href="@{/rooms/list}"
+                class="d-block py-2 text-secondary text-decoration-none"
+                >My Bookings</a
+              >
+            </div>
+          </div>
+          <a
+            href="#vipRoomsSection"
+            class="d-block py-2 text-secondary text-decoration-none"
+            >VIP Rooms</a
+          >
+          <a
+            href="#reviewsSection"
+            class="d-block py-2 text-secondary text-decoration-none"
+            >Reviews</a
+          >
+          <th:block sec:authorize="isAuthenticated()">
+            <a
+              th:href="@{/logout}"
+              class="d-block py-2 text-secondary text-decoration-none"
+              >Logout</a
+            >
+          </th:block>
+          <th:block sec:authorize="isAnonymous()">
+            <a
+              th:href="@{/login}"
+              class="d-block py-2  text-secondary text-decoration-none"
+              >Login</a
+            >
+          </th:block>
+        </div>
+      </header>
+
+      <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+          <div class="container py-5">
+            <div class="row align-items-center">
+              <div class="col-md-6 mb-4 mb-md-0">
+                <h1 class="display-5 fw-bold text-dark mb-3">
+                  Find your home away from home
+                </h1>
+                <p class="fs-4 text-secondary mb-4">Book your stay now!</p>
+                <div class="row g-3">
+                  <div class="col-sm-8">
+                    <textarea
+                      id="searchInput"
+                      placeholder="Where are you going?"
+                      rows="1"
+                      class="form-control"
+                    ></textarea>
+                  </div>
+                  <div class="col-sm-4">
+                    <button
+                      id="searchButton"
+                      class="btn btn-primary w-100 py-2"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="animated-card">
+                  <img
+                    src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                    alt="Luxury Hotel Room"
+                    class="rounded shadow img-fluid"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Featured Rooms -->
+        <section class="bg-white py-5">
+          <div class="container" id="featuredRoomsSection">
+            <h2 class="text-center fw-bold mb-5">Featured Rooms</h2>
+
+            <div id="loadingSpinner" class="text-center py-5">
+              <div
+                class="spinner-border text-primary"
+                role="status"
+                style="width: 3rem; height: 3rem"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+
+            <div
+              id="featuredRoomsContainer"
+              class="row g-4"
+              style="display: none"
+            >
+              <!-- Room cards will be inserted here by JavaScript -->
+            </div>
+          </div>
+        </section>
+
+        <!-- VIP Rooms Section -->
+        <section class="bg-white py-5" id="vipRoomsSection">
+          <div class="container">
+            <h2 class="text-center fw-bold mb-5 text-danger">VIP Rooms</h2>
+
+            <div id="vipLoadingSpinner" class="text-center py-5">
+              <div
+                class="spinner-border text-danger"
+                role="status"
+                style="width: 3rem; height: 3rem"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+
+            <div id="vipRoomsContainer" class="row g-4" style="display: none">
+              <!-- VIP rooms will be added here via JavaScript -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Special Offers -->
+        <section class="py-5 bg-light">
+          <div class="container">
+            <h2 class="text-center fw-bold mb-5">Special Offers</h2>
+            <div class="row g-4">
+              <div class="col-lg-6">
+                <div class="card h-100 shadow-sm overflow-hidden">
+                  <div class="row g-0">
+                    <div class="col-md-6">
+                      <img
+                        src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
+                        alt="Weekend Getaway"
+                        class="img-fluid h-100 object-fit-cover sp_offer_img"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card-body">
+                        <h3 class="card-title fw-semibold">Weekend Getaway</h3>
+                        <p class="card-text text-secondary mb-4">
+                          Enjoy a 20% discount on weekend stays. Perfect for a
+                          quick escape from the city.
+                        </p>
+                        <button class="btn btn-primary">Learn More</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card h-100 shadow-sm overflow-hidden">
+                  <div class="row g-0">
+                    <div class="col-md-6">
+                      <img
+                        src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
+                        alt="Family Package"
+                        class="img-fluid h-100 object-fit-cover sp_offer_img"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card-body">
+                        <h3 class="card-title fw-semibold">Family Package</h3>
+                        <p class="card-text text-secondary mb-4">
+                          Book a family room and get complimentary breakfast and
+                          access to our kids' club.
+                        </p>
+                        <button class="btn btn-primary">Learn More</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Review Section -->
+        <section class="py-5 bg-light" id="reviewsSection">
+          <div class="container" id="reviewsSection">
+            <h2 class="text-center fw-bold mb-5">What Our Guests Say</h2>
+
+            <!-- Static guest reviews -->
+            <div class="row g-4 mb-5">
+              <div class="col-md-4">
+                <div
+                  class="card h-100 shadow-sm border-start border-4 border-success"
+                >
+                  <div class="card-body">
+                    <p class="card-text text-secondary">
+                      “Absolutely luxurious stay. The staff was friendly, and
+                      the rooms were spotless. Highly recommended!”
+                    </p>
+                    <h5 class="card-title mt-3">– Sarah L.</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div
+                  class="card h-100 shadow-sm border-start border-4 border-warning"
+                >
+                  <div class="card-body">
+                    <p class="card-text text-secondary">
+                      “Loved the VIP suite! The view was breathtaking, and the
+                      butler service was next level.”
+                    </p>
+                    <h5 class="card-title mt-3">– Daniel R.</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div
+                  class="card h-100 shadow-sm border-start border-4 border-primary"
+                >
+                  <div class="card-body">
+                    <p class="card-text text-secondary">
+                      “Perfect for a family vacation. The amenities were
+                      excellent, and the kids loved it too!”
+                    </p>
+                    <h5 class="card-title mt-3">– Priya K.</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- User review submission -->
+            <div class="bg-white p-4 rounded shadow-sm">
+              <h4 class="fw-semibold mb-3">Write a Review</h4>
+              <form id="reviewForm">
+                <div class="mb-3">
+                  <textarea
+                    class="form-control"
+                    id="userReview"
+                    rows="4"
+                    placeholder="Share your experience with us..."
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Submit Review
+                </button>
+                <div
+                  id="reviewSuccess"
+                  class="text-success mt-3"
+                  style="display: none"
+                >
+                  Thank you for your review!
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- AI Assistant -->
+        <section class="py-5 bg-white">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-lg-8">
+                <h2 class="text-center fw-bold mb-4">
+                  Need Help Planning Your Stay?
+                </h2>
+                <div class="bg-light rounded p-4 shadow-sm">
+                  <p class="text-secondary mb-4 text-center">
+                    Our AI assistant can help you find the perfect room based on
+                    your preferences.
+                  </p>
+                  <div class="mb-3">
+                    <textarea
+                      id="assistantInput"
+                      placeholder="Describe your ideal stay (e.g., 'I need a quiet room with ocean view for 2 adults and 1 child')"
+                      rows="3"
+                      class="form-control"
+                    ></textarea>
+                  </div>
+                  <div class="text-center">
+                    <button
+                      id="getRecommendationsBtn"
+                      class="btn btn-primary px-4"
+                    >
+                      <span
+                        id="assistantSpinner"
+                        class="spinner-border spinner-border-sm me-2 d-none"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Get Recommendations
+                    </button>
+                  </div>
+                  <div
+                    id="assistantResponseContainer"
+                    class="mt-4 p-3 bg-white rounded border"
+                    style="display: none"
+                  >
+                    <!-- AI response will be inserted here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="bg-dark text-white py-5">
+        <div class="container">
+          <div class="row g-4">
+            <div class="col-md-3">
+              <h3 class="fs-5 fw-semibold mb-3">About Us</h3>
+              <p class="text-light">
+                Luxury Hotel offers premium accommodations with world-class
+                amenities and exceptional service.
+              </p>
+            </div>
+            <div class="col-md-3">
+              <h3 class="fs-5 fw-semibold mb-3">Quick Links</h3>
+              <ul class="list-unstyled">
+                <li class="mb-2">
+                  <a href="#" class="text-light text-decoration-none">Home</a>
+                </li>
+                <li class="mb-2">
+                  <a href="#" class="text-light text-decoration-none">Rooms</a>
+                </li>
+                <li class="mb-2">
+                  <a href="#" class="text-light text-decoration-none"
+                    >Amenities</a
+                  >
+                </li>
+                <li class="mb-2">
+                  <a href="#" class="text-light text-decoration-none"
+                    >Contact</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-3">
+              <h3 class="fs-5 fw-semibold mb-3">Contact</h3>
+              <ul class="list-unstyled text-light">
+                <li class="mb-2">123 Hotel Street, City</li>
+                <li class="mb-2">Phone: +1 234 567 890</li>
+                <li class="mb-2">Email: info@luxuryhotel.com</li>
+              </ul>
+            </div>
+            <div class="col-md-3">
+              <h3 class="fs-5 fw-semibold mb-3">Newsletter</h3>
+              <p class="text-light mb-2">Subscribe to get special offers</p>
+              <div class="input-group">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Your email"
+                />
+                <button class="btn btn-primary">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-arrow-right"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="border-top border-secondary mt-4 pt-4 text-center text-light"
+          >
+            <p>&copy; 2023 Luxury Hotel. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        mobileMenuToggle.addEventListener("click", function () {
+          if (mobileMenu.classList.contains("d-none")) {
+            mobileMenu.classList.remove("d-none");
+          } else {
+            mobileMenu.classList.add("d-none");
+          }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById("searchInput");
+        const searchButton = document.getElementById("searchButton");
+
+        searchButton.addEventListener("click", function () {
+          if (!searchInput.value.trim()) return;
+          searchRooms(searchInput.value);
+        });
+
+        // AI Assistant functionality
+        const assistantInput = document.getElementById("assistantInput");
+        const getRecommendationsBtn = document.getElementById(
+          "getRecommendationsBtn"
+        );
+        const assistantResponseContainer = document.getElementById(
+          "assistantResponseContainer"
+        );
+        const assistantSpinner = document.getElementById("assistantSpinner");
+
+        getRecommendationsBtn.addEventListener("click", function () {
+          if (!assistantInput.value.trim()) return;
+          getAssistantResponse(assistantInput.value);
+        });
+
+        // Load initial featured rooms
+        loadFeaturedRooms();
+
+        // Functions
+        async function searchRooms(query) {
+          const loadingSpinner = document.getElementById("loadingSpinner");
+          const featuredRoomsContainer = document.getElementById(
+            "featuredRoomsContainer"
+          );
+
+          try {
+            loadingSpinner.style.display = "block";
+            featuredRoomsContainer.style.display = "none";
+
+            // Simulating API delay
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            // Sample data based on search
+            const rooms = [
+              {
+                id: 1,
+                name: "Deluxe Ocean View",
+                description:
+                  "Spacious room with stunning ocean views and a private balcony.",
+                price: 299,
+                image:
+                  "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+              },
+              {
+                id: 2,
+                name: "Executive Suite",
+                description:
+                  "Luxurious suite with separate living area and premium amenities.",
+                price: 459,
+                image:
+                  "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+              },
+              {
+                id: 3,
+                name: "Family Room",
+                description:
+                  "Perfect for families with children, featuring two queen beds.",
+                price: 349,
+                image:
+                  "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+              },
+            ];
+
+            displayRooms(rooms);
+          } catch (error) {
+            console.error("Error searching rooms:", error);
+          } finally {
+            loadingSpinner.style.display = "none";
+            featuredRoomsContainer.style.display = "flex";
+          }
+        }
+
+        async function loadFeaturedRooms() {
+          const loadingSpinner = document.getElementById("loadingSpinner");
+          const featuredRoomsContainer = document.getElementById(
+            "featuredRoomsContainer"
+          );
+
+          try {
+            // Simulating API delay
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const rooms = [
+              {
+                id: 1,
+                name: "Deluxe Ocean View",
+                description:
+                  "Spacious room with stunning ocean views and a private balcony.",
+                price: 299,
+                image:
+                  "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+              },
+              {
+                id: 2,
+                name: "Executive Suite",
+                description:
+                  "Luxurious suite with separate living area and premium amenities.",
+                price: 459,
+                image:
+                  "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+              },
+              {
+                id: 3,
+                name: "Family Room",
+                description:
+                  "Perfect for families with children, featuring two queen beds.",
+                price: 349,
+                image:
+                  "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+              },
+            ];
+
+            displayRooms(rooms);
+          } catch (error) {
+            console.error("Error loading featured rooms:", error);
+          } finally {
+            loadingSpinner.style.display = "none";
+            featuredRoomsContainer.style.display = "flex";
+          }
+        }
+
+        // VIP Rooms
+        async function loadVipRooms() {
+          const vipLoadingSpinner =
+            document.getElementById("vipLoadingSpinner");
+          const vipRoomsContainer =
+            document.getElementById("vipRoomsContainer");
+
+          try {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const vipRooms = [
+              {
+                id: 1,
+                name: "Royal VIP Suite",
+                description:
+                  "Exclusive suite with private lounge, jacuzzi, and personalized butler service.",
+                price: 999,
+                image:
+                  "https://images.unsplash.com/photo-1678874779969-2005e8d3cde3?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              },
+              {
+                id: 2,
+                name: "VIP Penthouse",
+                description:
+                  "Panoramic city views, luxury interiors, and private chef access for exclusive guests.",
+                price: 1299,
+                image:
+                  "https://images.unsplash.com/photo-1744974256549-8ece7cdb5dd2?q=80&w=2059&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              },
+              {
+                id: 3,
+                name: "VIP Penthouse",
+                description:
+                  "Panoramic city views, luxury interiors, and private chef access for exclusive guests.",
+                price: 1299,
+                image:
+                  "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              },
+            ];
+
+            displayVipRooms(vipRooms);
+          } catch (error) {
+            console.error("Error loading VIP rooms:", error);
+          } finally {
+            vipLoadingSpinner.style.display = "none";
+            vipRoomsContainer.style.display = "flex";
+          }
+        }
+
+        function displayVipRooms(rooms) {
+          const vipRoomsContainer =
+            document.getElementById("vipRoomsContainer");
+          vipRoomsContainer.innerHTML = "";
+
+          rooms.forEach((room) => {
+            const roomCard = document.createElement("div");
+            roomCard.className = "col-md-6 col-lg-4";
+            roomCard.innerHTML = `
+      <div class="card h-100 shadow-sm room-card border-danger">
+        <img src="${room.image}" alt="${room.name}" class="card-img-top" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+          <h3 class="card-title fs-5 fw-semibold">${room.name}</h3>
+          <p class="card-text text-secondary mb-3">${room.description}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="fs-5 fw-bold text-danger">$${room.price}<span class="fs-6 text-secondary">/night</span></span>
+            <button th:href="@{/register}" class="btn btn-danger btn-sm">Book Now</button>
+          </div>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between">
+          <button  th:href="@{/register}" class="btn btn-link text-danger text-decoration-none p-0">View Details</button>
+          <button class="btn btn-link text-danger text-decoration-none p-0">Add to Favorites</button>
+        </div>
+      </div>
+    `;
+            vipRoomsContainer.appendChild(roomCard);
+          });
+        }
+        loadVipRooms();
+
+        function displayRooms(rooms) {
+          const featuredRoomsContainer = document.getElementById(
+            "featuredRoomsContainer"
+          );
+          featuredRoomsContainer.innerHTML = "";
+
+          rooms.forEach((room) => {
+            const roomCard = document.createElement("div");
+            roomCard.className = "col-md-6 col-lg-4";
+            roomCard.innerHTML = `
+            <div class="card h-100 shadow-sm room-card">
+              <img src="${room.image}" alt="${room.name}" class="card-img-top" style="height: 200px; object-fit: cover;">
+              <div class="card-body">
+                <h3 class="card-title fs-5 fw-semibold">${room.name}</h3>
+                <p class="card-text text-secondary mb-3">${room.description}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fs-5 fw-bold text-primary">$${room.price}<span class="fs-6 text-secondary">/night</span></span>
+                  <button th:href="@{/register}" class="btn btn-primary btn-sm">Book Now</button>
+                   
+                </div>
+              </div>
+              <div class="card-footer bg-light d-flex justify-content-between">
+                <button th:href="@{/register}" class="btn btn-link text-primary text-decoration-none p-0">View Details</button>
+                <button class="btn btn-link text-primary text-decoration-none p-0">Add to Favorites</button>
+              </div>
+            </div>
+          `;
+            featuredRoomsContainer.appendChild(roomCard);
+          });
+        }
+
+        async function getAssistantResponse(query) {
+          if (!query.trim()) return;
+
+          try {
+            assistantSpinner.classList.remove("d-none");
+            assistantResponseContainer.style.display = "none";
+
+            // Simulate API call with a delay
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            // Sample response based on query
+            let response = "";
+
+            if (
+              query.toLowerCase().includes("ocean") ||
+              query.toLowerCase().includes("view")
+            ) {
+              response = `
+## Deluxe Ocean View Suite
+- **Description**: Spacious suite with panoramic ocean views and private balcony
+- **Amenities**: King bed, soaking tub, mini bar, room service, free WiFi
+- **Price Range**: $280-350 per night
+
+## Premium Beachfront Villa
+- **Description**: Standalone villa just steps from the beach with unobstructed views
+- **Amenities**: Full kitchen, separate living area, private hot tub, direct beach access
+- **Price Range**: $450-550 per night
+            `;
+            } else if (
+              query.toLowerCase().includes("family") ||
+              query.toLowerCase().includes("child")
+            ) {
+              response = `
+## Family Comfort Suite
+- **Description**: Spacious suite designed for families with separate kids' area
+- **Amenities**: Two queen beds, pullout sofa, kids' welcome pack, game console
+- **Price Range**: $320-380 per night
+
+## Two-Bedroom Family Villa
+- **Description**: Two connected bedrooms with shared living space, perfect for families
+- **Amenities**: Kids' pool access, complimentary breakfast, game room access
+- **Price Range**: $400-480 per night
+            `;
+            } else {
+              response = `
+## Luxury King Suite
+- **Description**: Our most popular room with elegant furnishings and city views
+- **Amenities**: King bed, rainfall shower, complimentary breakfast, evening turndown
+- **Price Range**: $250-320 per night
+
+## Executive Business Suite
+- **Description**: Designed for business travelers with dedicated workspace
+- **Amenities**: High-speed internet, business center access, complimentary pressing service
+- **Price Range**: $280-350 per night
+
+## Romantic Getaway Suite
+- **Description**: Intimate setting perfect for couples with extra privacy
+- **Amenities**: Four-poster king bed, champagne service, couples' spa discount
+- **Price Range**: $300-380 per night
+            `;
+            }
+
+            // Format the response with marked.js
+            const marked = window.marked;
+            marked.setOptions({ breaks: true });
+            const formattedResponse = marked.parse(response);
+
+            assistantResponseContainer.innerHTML = formattedResponse;
+            assistantResponseContainer.style.display = "block";
+          } catch (error) {
+            console.error("Error getting assistant response:", error);
+            assistantResponseContainer.innerHTML =
+              '<p class="text-danger">Sorry, there was an error processing your request. Please try again.</p>';
+            assistantResponseContainer.style.display = "block";
+          } finally {
+            assistantSpinner.classList.add("d-none");
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
